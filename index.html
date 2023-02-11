@@ -37,76 +37,73 @@
 </body>
 
 <script>
-    const display = document.querySelector('#display');
     currentNum = '';
-    display.textContent = currentNum;
-
-    //if button press, add button id to display string
-    const displayElements = document.querySelectorAll('.display');
-    displayElements.forEach((displayElement) => {
-        displayElement.addEventListener('click', () => {
-
-            if(currentNum === '' || currentNum === 0) {
-                if(displayElement.id>0) {
-                    currentNum += displayElement.id;  
-                }
-            } else {
-                currentNum += displayElement.id;
-            }
-
-            display.textContent = currentNum;
-        });
-    });
-
     let calculation = {
         op: '',
         num1: '',
         num2: ''
     };
-    const operators = document.querySelectorAll('.operator');
-    operators.forEach((operator) => {
-        operator.addEventListener('click', () => {
-            if(currentNum !== '') {
-                if(calculation.num1 === '') {
-                    calculation.num1 = currentNum;
-                    calculation.op = operator.id;
-                    currentNum = '';
-                } else {
-                    calculation.num2 = currentNum;
-                    calculation.op = operator.id;
-                    currentNum = operate(calculation);
-                    display.textContent = currentNum;
-                    calculation = {
-                        op: '',
-                        num1: currentNum,
-                        num2: ''
-                    };
-                }
-            } 
 
+    const display = document.querySelector('#display');
+    display.textContent = currentNum;
+
+    //numpad
+    const displayElements = document.querySelectorAll('.display');
+    displayElements.forEach((displayElement) => {
+        displayElement.addEventListener('click', () => {
+
+            if(calculation.num1 === '') {
+                if(displayElement.id>0) {
+                    currentNum += displayElement.id; 
+                    calculation.num1 = currentNum; 
+                }
+            } else if(currentNum === '0') {
+                if(displayElement.id>0) {
+                    currentNum += displayElement.id; 
+                    calculation.num2 = currentNum;
+                }
+            } else {
+                currentNum += displayElement.id;
+                calculation.num2 = currentNum;
+            }
+
+            display.textContent = currentNum;
+            
+            
         });
     });
 
-    //equals
+    const operators = document.querySelectorAll('.operator');
+    operators.forEach((operator) => {
+        operator.addEventListener('click', () => {
+            if(calculation.num1 !== '') {
+
+                if(calculation.num2 !== '') {
+                    calculation.num1 = operate(calculation);
+                    calculation.num2 = '';
+                }
+
+                calculation.op = operator.id;
+                currentNum = '';
+                display.textContent = calculation.num1;
+            }
+        });
+    });
+
     const equals = document.querySelector('#equals');
     equals.addEventListener('click', () => {
-        //calc
-        calculation.num2 = currentNum;
-        currentNum = operate(calculation);
-        display.textContent = currentNum;
-
-        calculation = {
-            op: '',
-            num1: currentNum,
-            num2: ''
-        };
-
+        if(calculation.num2 !== '') {
+                calculation.num1 = operate(calculation);
+                calculation.num2 = '';
+                calculation.op = '';
+                currentNum = '';
+                display.textContent = calculation.num1;
+        }
     });
-    
-    //if clear button press, replace display string to empty string
+
+    //clear
     const clear = document.querySelector('#clear');
     clear.addEventListener('click', () => {
-        //clear reset
         currentNum = '';
         display.textContent = currentNum;
         calculation = {
