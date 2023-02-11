@@ -60,21 +60,27 @@
 
     let calculation = {
         op: '',
-        num: ''
+        num1: '',
+        num2: ''
     };
     const operators = document.querySelectorAll('.operator');
     operators.forEach((operator) => {
         operator.addEventListener('click', () => {
-            if(display.textContent !== '') {
+            if(currentNum !== '') {
                 if(calculation.num1 === '') {
                     calculation.num1 = currentNum;
                     calculation.op = operator.id;
                     currentNum = '';
                 } else {
-                    calculation.num = operate(calculation, currentNum);
-                    display.textContent = calculation.num;
-
-                    calculation.op = '';
+                    calculation.num2 = currentNum;
+                    calculation.op = operator.id;
+                    currentNum = operate(calculation);
+                    display.textContent = currentNum;
+                    calculation = {
+                        op: '',
+                        num1: currentNum,
+                        num2: ''
+                    };
                 }
             } 
 
@@ -85,12 +91,13 @@
     const equals = document.querySelector('#equals');
     equals.addEventListener('click', () => {
         //calc
-        currentNum = operate(calculation, currentNum);
+        calculation.num2 = currentNum;
+        currentNum = operate(calculation);
         display.textContent = currentNum;
 
         calculation = {
             op: '',
-            num1: '',
+            num1: currentNum,
             num2: ''
         };
 
