@@ -24,12 +24,12 @@
     </div>
 
     <div id = "calculator">
-        <button class = "display" class = "operator" id = "+">+</button>
-        <button class = "display" class = "operator" id = "-">-</button>
-        <button class = "display" class = "operator" id = "*">*</button>
-        <button class = "display" class = "operator" id = "/">/</button>
-        <button class = "display" class = "special" id="(">(</button>
-        <button class = "display" class = "special" id=")">)</button>
+        <button class = "operator" id = "+">+</button>
+        <button class = "operator" id = "-">-</button>
+        <button class = "operator" id = "*">*</button>
+        <button class = "operator" id = "/">/</button>
+        <button class = "special" id="(">(</button>
+        <button class = "special" id=")">)</button>
         <button id = "equals">=</button>
         <button id = "clear">clear</button>
     </div>
@@ -38,18 +38,76 @@
 
 <script>
     const display = document.querySelector('#display');
-    display.textContent = "";
+    currentNum = '';
+    display.textContent = currentNum;
 
     //if button press, add button id to display string
     const displayElements = document.querySelectorAll('.display');
     displayElements.forEach((displayElement) => {
         displayElement.addEventListener('click', () => {
-            display.textContent += displayElement.id;
+
+            if(currentNum === '' || currentNum === 0) {
+                if(displayElement.id>0) {
+                    currentNum += displayElement.id;  
+                }
+            } else {
+                currentNum += displayElement.id;
+            }
+
+            display.textContent = currentNum;
         });
     });
-    
+
+    let calculation = {
+        op: '',
+        num: ''
+    };
+    const operators = document.querySelectorAll('.operator');
+    operators.forEach((operator) => {
+        operator.addEventListener('click', () => {
+            if(display.textContent !== '') {
+                if(calculation.num1 === '') {
+                    calculation.num1 = currentNum;
+                    calculation.op = operator.id;
+                    currentNum = '';
+                } else {
+                    calculation.num = operate(calculation, currentNum);
+                    display.textContent = calculation.num;
+
+                    calculation.op = '';
+                }
+            } 
+
+        });
+    });
+
+    //equals
+    const equals = document.querySelector('#equals');
+    equals.addEventListener('click', () => {
+        //calc
+        currentNum = operate(calculation, currentNum);
+        display.textContent = currentNum;
+
+        calculation = {
+            op: '',
+            num1: '',
+            num2: ''
+        };
+
+    });
     
     //if clear button press, replace display string to empty string
+    const clear = document.querySelector('#clear');
+    clear.addEventListener('click', () => {
+        //clear reset
+        currentNum = '';
+        display.textContent = currentNum;
+        calculation = {
+            op: '',
+            num1: '',
+            num2: ''
+        };
+    });
 </script>
 
 </html>
