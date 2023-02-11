@@ -1,17 +1,33 @@
+function resetAll() {
+    //operation.textContent = '';
+    subtotal.textContent = '';
+    display.textContent = '';
+    calculation = {}
+}
+
 function add(a,b) {
+    console.log(a+b);
     return a+b;
 }
 
 function subtract(a,b) {
+    console.log(a-b);
     return a-b;
 }
 
 function multiply(a,b) {
+    console.log(a*b);
     return a*b;
 }
 
 function divide(a,b) {
-    if (b !== 0) return a/b;
+    //check if div by 0
+    if(b === 0) {
+        alert("ERROR: Divide by 0 \nReseting calculator");
+        reset();
+        return;
+    }
+    return a/b;
 }
 
 function operate(calculation) {

@@ -9,7 +9,14 @@
     <title>Document</title>
 </head>
 <body>
+
+    Sub-total:
+    <div id="subtotal"></div>
+    Operation:
+    <div id = "operation"></div>
+    Display:
     <div id = "display"></div>
+
     <div id = "numpad">
         <button class = "display" class = "number" id ="0">0</button>
         <button class = "display" class = "number" id ="1">1</button>
@@ -28,90 +35,79 @@
         <button class = "operator" id = "-">-</button>
         <button class = "operator" id = "*">*</button>
         <button class = "operator" id = "/">/</button>
-        <button class = "special" id="(">(</button>
-        <button class = "special" id=")">)</button>
         <button id = "equals">=</button>
         <button id = "clear">clear</button>
     </div>
 
+    Total: 
+    <div id ="total"></div>
+
 </body>
 
 <script>
-    currentNum = '';
-    let calculation = {
-        op: '',
-        num1: '',
-        num2: ''
-    };
+    let calculation = {};
 
     const display = document.querySelector('#display');
-    display.textContent = currentNum;
+    display.textContent = '';
 
     //numpad
     const displayElements = document.querySelectorAll('.display');
     displayElements.forEach((displayElement) => {
         displayElement.addEventListener('click', () => {
 
-            if(calculation.num1 === '') {
-                if(displayElement.id>0) {
-                    currentNum += displayElement.id; 
-                    calculation.num1 = currentNum; 
-                }
-            } else if(currentNum === '0') {
-                if(displayElement.id>0) {
-                    currentNum += displayElement.id; 
-                    calculation.num2 = currentNum;
-                }
-            } else {
-                currentNum += displayElement.id;
-                calculation.num2 = currentNum;
-            }
+            display.textContent = parseInt(display.textContent + displayElement.id);
+            calculation.num2 = display.textContent;
 
-            display.textContent = currentNum;
-            
-            
         });
     });
 
+    const operation = document.querySelector('#operation');
+    const subtotal = document.querySelector('#subtotal');
     const operators = document.querySelectorAll('.operator');
     operators.forEach((operator) => {
         operator.addEventListener('click', () => {
-            if(calculation.num1 !== '') {
-
-                if(calculation.num2 !== '') {
-                    calculation.num1 = operate(calculation);
-                    calculation.num2 = '';
-                }
-
-                calculation.op = operator.id;
-                currentNum = '';
-                display.textContent = calculation.num1;
+            if(calculation.num1 === undefined) {
+                calculation.num1 = calculation.num2;
+                display.textContent = '';
+            } else {
+            //if two number ready
+            calculation.num1 = Math.round(operate(calculation)*100)/100;
             }
+
+            calculation.op = operator.id;
+            display.textContent= '';
+            calculation.num2= '';
+
+            //operation.textContent = operator.id;
+            subtotal.textContent = calculation.num1;
+            
         });
     });
 
+    const total = document.querySelector('#total');
     const equals = document.querySelector('#equals');
     equals.addEventListener('click', () => {
-        if(calculation.num2 !== '') {
-                calculation.num1 = operate(calculation);
-                calculation.num2 = '';
-                calculation.op = '';
-                currentNum = '';
-                display.textContent = calculation.num1;
+
+        //if no num1, ignore
+
+        //if two number ready
+        if(calculation.num1 !== undefined && calculation.num2 !== '' && calculation.op !== '') {
+            calculation.num1 = Math.round(operate(calculation)*100)/100;
+            subtotal.textContent = calculation.num1;
+            //total.textContent = calculation.num1;
+
+            calculation.num2= '';
+            display.textContent= '';
+
+            calculation.op = '';
+            //operation.textContent = '';
         }
+
     });
 
     //clear
     const clear = document.querySelector('#clear');
-    clear.addEventListener('click', () => {
-        currentNum = '';
-        display.textContent = currentNum;
-        calculation = {
-            op: '',
-            num1: '',
-            num2: ''
-        };
-    });
+    clear.addEventListener('click', () => resetAll());
 </script>
 
 </html>
